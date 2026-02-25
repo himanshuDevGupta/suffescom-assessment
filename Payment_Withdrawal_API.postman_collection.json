@@ -1,0 +1,188 @@
+{
+  "info": {
+    "name": "Payment Withdrawal API",
+    "_postman_id": "b4e95c9f-0000-4000-8000-000000000001",
+    "description": "Postman collection for the Express withdrawal service (health + withdrawal).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"StrongPass123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "description": "Register a new user. Response includes a userId you can store, but main flow is to then login and use the JWT."
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"StrongPass123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Login and obtain a JWT access token. Copy the token into the collection variable {{token}}."
+      },
+      "response": []
+    },
+    {
+      "name": "Wallet - Get Balance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/wallets",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "wallets"
+          ]
+        },
+        "description": "Get the current user's wallet balance."
+      },
+      "response": []
+    },
+    {
+      "name": "Wallet - Deposit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 100,\n  \"currency\": \"INR\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/wallets/deposit",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "wallets",
+            "deposit"
+          ]
+        },
+        "description": "Deposit funds into current user's wallet. Amount is in major units (e.g., 100 INR)."
+      },
+      "response": []
+    },
+    {
+      "name": "Withdrawals - Create Withdrawal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "withdraw-001",
+            "description": "Optional idempotency key to avoid duplicate withdrawals"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 5,\n  \"currency\": \"INR\",\n  \"destination\": \"bank-account-xxxx\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/withdrawals",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "withdrawals"
+          ]
+        },
+        "description": "Create a withdrawal for the authenticated user. Amount is in major units (e.g., 5 INR)."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": "<paste_jwt_from_login_here>"
+    }
+  ]
+}
+
